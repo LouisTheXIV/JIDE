@@ -6,7 +6,7 @@ import re
 from editor.highlighting import HighLighter
 from editor.config import Config
 from editor.menubar import MenuBar
-from editor.settings import *
+from editor.settings import SettingsMenu
 
 
 class JIDE:
@@ -164,7 +164,7 @@ class JIDE:
             widget.mark_set(INSERT, index)
 
     def OpenSettingsMenu(self):
-        pass
+        settings = SettingsMenu(self)
 
     def ModifyColumn(self, index, add, chars):
         try:
@@ -329,7 +329,10 @@ class JIDE:
             pass
 
     def OnCloseSearchBox(self):
-        self.Lighter.RemoveCustomChars(self.kw.get())
+        #self.Lighter.RemoveCustomChars(self.kw.get())
+        text = self.code.get(1.0, 'end')
+        self.code.delete(1.0, 'end')
+        self.code.insert(INSERT, text)
         self.searchbox.destroy()
         
         
