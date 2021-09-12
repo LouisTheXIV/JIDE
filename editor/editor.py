@@ -39,7 +39,7 @@ class JIDE:
             self.returnbind = self.code.bind("<Return>", self.AutoIndentNewLines)
         if self.c.highlight:
             self.Lighter = HighLighter(self)
-            self.highlightbind = self.code.bind("<Key>", self.OnKeyDown)
+        self.onkeydownbind = self.code.bind("<Key>", self.OnKeyDown)
         #self.code.bind("f", self.reload)
 
 
@@ -76,7 +76,8 @@ class JIDE:
             self.code.unbind("<Return>", self.returnbind)
 
     def OnKeyDown(self, event):
-        self.Lighter.Highlight(event)
+        if self.c.highlight:
+            self.Lighter.Highlight(event)
         #print(self.code.xview())
         #print(self.code.yview())
         if self.file is not None:
@@ -146,6 +147,9 @@ class JIDE:
             widget.mark_set(INSERT, self.ModifyColumn(index, True, 1))
             self.code.delete("insert -1 chars", "insert")
             widget.mark_set(INSERT, index)
+
+    def OpenSettingsMenu(self):
+        pass
 
     def ModifyColumn(self, index, add, chars):
         try:

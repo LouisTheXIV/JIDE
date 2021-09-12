@@ -33,4 +33,5 @@ class HighLighter:
         TKlighter.custom_h(self.code, char, "red")
 
     def RemoveCustomChars(self, char):
+        TKlighter.double_qouts_h(self.code, self.string)
         TKlighter.custom_h(self.code, char, self.jide.c.font_color)

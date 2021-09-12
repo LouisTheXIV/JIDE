@@ -33,6 +33,10 @@ class MenuBar():
         self.edit_menu.add_command(label="Paste", command=self.jide.Paste, accelerator="Ctrl+V")
         self.edit_menu.add_separator()
         self.edit_menu.add_command(label="Find", command=self.jide.Find, accelerator="Ctrl+F")
+
+        self.settings_menu = Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label="Settings", menu=self.settings_menu)
+        self.settings_menu.add_command(label="Open Settings Menu", command=self.jide.OpenSettingsMenu)
         #self.autosave = self.file_menu.add_command(label=self.autosavetxt, command=self.AutoSaveCheckMark)
 
         self.SetKeyboardShortcuts()
