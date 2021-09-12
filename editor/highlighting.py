@@ -18,9 +18,6 @@ class HighLighter:
 
     def SetSyntaxColors(self):
         self.string = self.syntax_colors['string']
-        self.number = self.syntax_colors['number']
-        self.punctuation = self.syntax_colors['punctuation']
-        self.brackets = self.syntax_colors['brackets']
 
     def Highlight(self, event):
         if self.reload == True:
@@ -33,5 +30,4 @@ class HighLighter:
         TKlighter.custom_h(self.code, char, "red")
 
     def RemoveCustomChars(self, char):
-        TKlighter.double_qouts_h(self.code, self.string)
         TKlighter.custom_h(self.code, char, self.jide.c.font_color)

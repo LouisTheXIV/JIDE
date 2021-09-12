@@ -1,11 +1,7 @@
 {  
     "highlight": {
         "enabled": "true",
-        "string": "green",
-        "number": "blue",
-        "punctuation": "#FFFFFF",
-        "brackets": "#FFFFFF",
-        "error": "red"
+        "string": "green"
     }, 
 
     "visuals": {
@@ -26,3 +22,4 @@
         "auto-quote": "true"
     }
 }
+

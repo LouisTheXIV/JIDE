@@ -1,20 +1,22 @@
 import tkinter
 from tkinter import *
 from tkinter.filedialog import askopenfilename, asksaveasfile
-from tkinter.messagebox import showerror
+from tkinter import messagebox
 import re
 from editor.highlighting import HighLighter
 from editor.config import Config
 from editor.menubar import MenuBar
+from editor.settings import *
 
 
 class JIDE:
     def __init__(self):
         self.c = Config()
         self.file = None
-        self.issaved = False
+        self.issaved = True
 
         self.win = Tk()
+        self.win.protocol("WM_DELETE_WINDOW", self.OnClose)
         self.win.geometry(f"{self.c.width}x{self.c.height}")
         self.win.title("JIDE")
         self.win.config(bg=self.c.bg_color)
@@ -42,6 +44,17 @@ class JIDE:
         self.onkeydownbind = self.code.bind("<Key>", self.OnKeyDown)
         #self.code.bind("f", self.reload)
 
+    def OnClose(self):
+        if self.issaved == False:
+            if self.file is not None:
+                MsgBox = messagebox.askquestion('Exit',f'Do you want to save {self.file} before closing?', icon='question')
+                if MsgBox == 'yes':
+                    with open(self.file, "w") as f: f.write(self.code.get(1.0, 'end')); f.close()
+            else:
+                MsgBox = messagebox.askquestion('Exit',f'Do you want to save Untitled.json before closing?', icon='question')
+                if MsgBox == 'yes':
+                    self.SaveAs()
+        self.win.destroy()
 
     def reload(self, event):
         self.c.reload()
@@ -82,8 +95,10 @@ class JIDE:
         #print(self.code.yview())
         if self.file is not None:
             self.win.title(f"*JIDE ~ {self.file}")
+            self.issaved = False
         else:
             self.win.title(f"*JIDE")
+            self.issaved = False
 
     def Indentation(self, event):
         self.code.insert(INSERT, " " * self.indentation)
