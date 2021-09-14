@@ -7,6 +7,7 @@ from editor.highlighting import HighLighter
 from editor.config import Config
 from editor.menubar import MenuBar
 from editor.settings import SettingsMenu
+import os, sys
 
 
 class JIDE:
@@ -39,10 +40,8 @@ class JIDE:
             self.backspacebind = self.code.bind("<BackSpace>", self.Backspace)
         if self.c.new_lines:
             self.returnbind = self.code.bind("<Return>", self.AutoIndentNewLines)
-        if self.c.highlight:
-            self.Lighter = HighLighter(self)
+        self.Lighter = HighLighter(self)
         self.onkeydownbind = self.code.bind("<Key>", self.OnKeyDown)
-        #self.code.bind("f", self.reload)
 
     def OnClose(self):
         if self.issaved == False:
@@ -54,54 +53,73 @@ class JIDE:
                 MsgBox = messagebox.askquestion('Exit',f'Do you want to save Untitled.json before closing?', icon='question')
                 if MsgBox == 'yes':
                     self.SaveAs()
-        self.win.destroy()
+        sys.exit(0)
 
-    def reload(self, event):
+    def reload(self):
         self.c.reload()
         self.Lighter.reload = True
         self.MenuBar.config = self.c
-        self.MenuBar.reload()
 
-        self.code.config(bg=self.c.bg_color, fg=self.c.font_color, font=(self.c.font, self.c.fontsize))
-        self.indentation = self.c.indentation
+        self.code.config(bg=self.c.bg_color, fg=self.c.font_color, font=(self.c.font, int(self.c.fontsize)))
+        self.indentation = int(self.c.indentation)
         self.win.config(bg=self.c.bg_color)
         self.win.wm_attributes('-alpha', self.c.alpha)
         self.win.geometry(f"{self.c.width}x{self.c.height}")
-        if self.c.highlight:
-            self.highlightbind = self.code.bind("<Key>", self.SyntaxHighlight)
-        else:
-            self.code.unbind("<Key>", self.highlightbind)
         if self.c.brackets:
             self.bracket1bind = self.code.bind("{", self.AutoIndentation)
             self.bracket2bind = self.code.bind("[", self.AutoSquareBracket)
         else:
-            self.code.unbind("{", self.bracket1bind)
-            self.code.unbind("[", self.bracket2bind)
+            try:
+                self.code.unbind("{", self.bracket1bind)
+                self.code.unbind("[", self.bracket2bind)
+            except AttributeError:
+                pass
         if self.c.quote:
             self.quotebind = self.code.bind('"', self.AutoQuote)
             self.backspacebind = self.code.bind("<BackSpace>", self.Backspace)
         else:
-            self.code.unbind('"', self.quotebind)
-            self.code.unbind("<BackSpace>", self.backspacebind)
+            try:
+                self.code.unbind('"', self.quotebind)
+                self.code.unbind("<BackSpace>", self.backspacebind)
+            except AttributeError:
+                pass
         if self.c.new_lines:
             self.returnbind = self.code.bind("<Return>", self.AutoIndentNewLines)
         else:
-            self.code.unbind("<Return>", self.returnbind)
+            try:
+                self.code.unbind("<Return>", self.returnbind)
+            except AttributeError:
+                pass
 
     def OnKeyDown(self, event):
         if self.c.highlight:
             self.Lighter.Highlight(event)
         #print(self.code.xview())
         #print(self.code.yview())
-        if self.file is not None:
+        if self.c.auto_save:
+            try:
+                with open(self.file, "w") as f:
+                    f.write(self.code.get(1.0, 'end'))
+                    f.close()
+                self.issaved = True
+            except:
+                pass
+
+        if self.file is not None and self.issaved == False:
             self.win.title(f"*JIDE ~ {self.file}")
             self.issaved = False
-        else:
+        elif self.issaved == False:
             self.win.title(f"*JIDE")
+            self.issaved = False
+        elif self.file is not None:
+            self.win.title(f"JIDE ~ {self.file}")
+            self.issaved = False
+        else:
+            self.win.title("JIDE")
             self.issaved = False
 
     def Indentation(self, event):
-        self.code.insert(INSERT, " " * self.indentation)
+        self.code.insert(INSERT, " " * int(self.indentation))
         return 'break'
 
     def AutoIndentation(self, event):
@@ -164,7 +182,13 @@ class JIDE:
             widget.mark_set(INSERT, index)
 
     def OpenSettingsMenu(self):
-        settings = SettingsMenu(self)
+        try:
+            if self.settings.IsOpen():
+                return
+            else:
+                self.settings = SettingsMenu(self)
+        except AttributeError:
+            self.settings = SettingsMenu(self)
 
     def ModifyColumn(self, index, add, chars):
         try:
@@ -207,20 +231,23 @@ class JIDE:
             self.issaved = False
 
     def OpenFile(self, event=None):
-        fpath = askopenfilename(filetypes=(("Json files", "*.json"),
-                                           ("All files", "*.*") ))
+        try:
+            fpath = askopenfilename(filetypes=(("Json files", "*.json"),
+                                            ("All files", "*.*") ))
 
-        if fpath is not None:
+            if fpath is not None:
 
-            with open(fpath, "r") as f:
-                contents = f.read()
-                f.close()
-            
-            self.code.delete(1.0,"end")
-            self.code.insert(1.0, contents)
-            self.file = fpath
-            self.win.title(f"JIDE ~ {fpath}")
-            self.issaved = True
+                with open(fpath, "r") as f:
+                    contents = f.read()
+                    f.close()
+                
+                self.code.delete(1.0,"end")
+                self.code.insert(1.0, contents)
+                self.file = fpath
+                self.win.title(f"JIDE ~ {fpath}")
+                self.issaved = True
+        except FileNotFoundError:
+            pass
 
     def Save(self, event=None):
         try:
@@ -291,19 +318,23 @@ class JIDE:
             pass
 
     def Find(self, event=None):
-        self.searchbox = Toplevel()
-        self.searchbox.title('Search')
-        self.searchbox.geometry('300x100')
+        try:
+            self.searchbox
+            return
+        except AttributeError:
+            self.searchbox = Toplevel()
+            self.searchbox.title('Search')
+            self.searchbox.geometry('300x100')
 
-        self.search_label = Label(self.searchbox, text="Search for:", font=('Arial', 11))
-        self.search_label.pack()
-        self.kw = Entry(self.searchbox, width=20, font=('Arial', 14))
-        self.kw.pack()
-        btn = Button(self.searchbox, width=10, text="Find", command=self.SearchKeyWord)
-        btn.pack()
+            self.search_label = Label(self.searchbox, text="Search for:", font=('Arial', 11))
+            self.search_label.pack()
+            self.kw = Entry(self.searchbox, width=20, font=('Arial', 14))
+            self.kw.pack()
+            btn = Button(self.searchbox, width=10, text="Find", command=self.SearchKeyWord)
+            btn.pack()
 
-        self.searchbox.protocol("WM_DELETE_WINDOW", self.OnCloseSearchBox)
-        self.searchbox.focus_set()
+            self.searchbox.protocol("WM_DELETE_WINDOW", self.OnCloseSearchBox)
+            self.searchbox.focus_set()
 
 
     def SearchKeyWord(self):
@@ -334,6 +365,7 @@ class JIDE:
         self.code.delete(1.0, 'end')
         self.code.insert(INSERT, text)
         self.searchbox.destroy()
+        del self.searchbox
         
         
 

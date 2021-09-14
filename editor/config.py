@@ -3,11 +3,7 @@ import json
 default_settings = {  
     "highlight": {
         "enabled": "true",
-        "string": "green",
-        "number": "blue",
-        "punctuation": "#FFFFFF",
-        "brackets": "#FFFFFF",
-        "error": "red"
+        "string": "green"
     }, 
 
     "visuals": {
@@ -29,6 +25,7 @@ default_settings = {
     }
 }
 
+
 def getData():
     with open("editor/data/config.json") as f:
         data = json.load(f)
@@ -48,15 +45,16 @@ class Config():
         self.font_color = text["font-color"]
         self.width = visuals["width"]
         self.height = visuals["height"]
-        self.alpha = visuals["transparency"]
+        self.alpha = float(visuals["transparency"])
         self.auto_save = bool(text['auto-save'] == "true")
-        self.indentation = text["indentation"]
-        self.fontsize = text["font-size"]
+        self.indentation = int(text["indentation"])
+        self.fontsize = int(text["font-size"])
         self.font = text["font"]
         self.new_lines = bool(text["indent-new-lines"] == "true")
         self.quote = bool(text["auto-quote"] == "true")
         self.brackets = bool(text["auto-bracket"] == "true")
         self.highlight = bool(self.data["highlight"]["enabled"] == "true")
+        self.string_color = self.data["highlight"]["string"]
 
     def reload(self):
         self.data = getData()

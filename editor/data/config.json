@@ -1,25 +1,22 @@
-{  
+{
     "highlight": {
         "enabled": "true",
         "string": "green"
-    }, 
-
+    },
     "visuals": {
         "width": 850,
         "height": 750,
         "editor-bg": "black",
-        "transparency" : 1
+        "transparency": 1
     },
-
     "text editor": {
         "auto-save": "false",
-        "font-size": 16,
+        "font-size": "16",
         "font": "Arial",
         "font-color": "white",
-        "indentation": 4,
+        "indentation": "4",
         "indent-new-lines": "true",
         "auto-bracket": "true",
         "auto-quote": "true"
     }
 }
-

@@ -1,5 +1,6 @@
 from tkinter import *
 import sys
+import webbrowser
 
 
 class MenuBar():
@@ -16,12 +17,12 @@ class MenuBar():
         self.menu_bar.add_cascade(label="File", menu=self.file_menu)
         self.file_menu.add_command(label='New File', command=self.jide.NewFile, accelerator="Ctrl+N")
         self.file_menu.add_command(label='Open File', command=self.jide.OpenFile, accelerator="Ctrl+O")
-        self.file_menu.add_command(label="Recent Files", command=None, accelerator=">")
+        #self.file_menu.add_command(label="Recent Files", command=None, accelerator=">")
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Save", command=self.jide.Save, accelerator="Ctrl+S")
         self.file_menu.add_command(label="Save As", command=self.jide.SaveAs, accelerator="Ctrl+Shift+S")
         self.file_menu.add_separator()
-        self.file_menu.add_command(label="Quit", command=lambda: sys.exit(0))
+        self.file_menu.add_command(label="Quit", command=self.OnQuit, accelerator="Ctrl+Q")
 
         self.edit_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Edit", menu=self.edit_menu)
@@ -33,6 +34,12 @@ class MenuBar():
         self.edit_menu.add_command(label="Paste", command=self.jide.Paste, accelerator="Ctrl+V")
         self.edit_menu.add_separator()
         self.edit_menu.add_command(label="Find", command=self.jide.Find, accelerator="Ctrl+F")
+
+        self.info_menu = Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label="Information", menu=self.info_menu)
+        self.info_menu.add_command(label="Source Code", command=self.Src)
+        self.info_menu.add_command(label="Report Bug", command=self.ReportBug)
+        self.info_menu.add_command(label="Settings", command=self.jide.OpenSettingsMenu)
 
         self.settings_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Settings", menu=self.settings_menu)
@@ -51,6 +58,7 @@ class MenuBar():
         self.screen.bind('<Control-x>', self.jide.Cut)
         self.screen.bind('<Control-c>', self.jide.Copy)
         self.screen.bind('<Control-f>', self.jide.Find)
+        self.screen.bind('<Control-q>', self.OnQuit)
         #self.screen.bind('<Control-v>', self.jide.Paste)
 
     def AutoSaveCheckMark(self):
@@ -61,5 +69,11 @@ class MenuBar():
         self.file_menu.entryconfigure(5, label=self.autosavetxt)
         #self.jide.AutoSave(True)
 
-    def reload(self):
-        pass
+    def OnQuit(self, event=None):
+        self.jide.OnClose()
+
+    def Src(self):
+        webbrowser.open("https://github.com/LouisTheXIV/JIDE")
+    
+    def ReportBug(self):
+        webbrowser.open("https://github.com/LouisTheXIV/JIDE/issues/new")
