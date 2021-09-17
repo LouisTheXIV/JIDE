@@ -4,6 +4,7 @@ Download: https://github.com/LouisTheXIV/JIDE/releases/tag/v0.1
 
 # Features
 Syntax Highlighting, Auto Indentation, basic text editor features, JSON syntax support, and even more!
+![Screenshot of JIDE](https://cdn.discordapp.com/attachments/753096420680138812/888458780562567188/unknown.png)
 
 # Future Plans
 Optimize code to be able to open larger files.
