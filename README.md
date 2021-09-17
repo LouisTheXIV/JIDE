@@ -1,5 +1,6 @@
 # JIDE
 Json IDE made with Python tkinter!
+Download: https://github.com/LouisTheXIV/JIDE/releases/tag/v0.1
 
 # Features
 Syntax Highlighting, Auto Indentation, basic text editor features, JSON syntax support, and even more!
