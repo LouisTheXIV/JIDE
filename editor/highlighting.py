@@ -12,7 +12,7 @@ class HighLighter:
         self.SetSyntaxColors()
 
     def LoadConfig(self):
-        with open("editor/data/config.json", "r") as f:
+        with open(self.jide.path + "config.json", "r") as f:
             self.syntax_colors = json.load(f)["highlight"]
             f.close()
 

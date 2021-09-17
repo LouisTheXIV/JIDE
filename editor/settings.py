@@ -73,7 +73,7 @@ class SettingsMenu():
         data["text editor"]["auto-bracket"] = self.IsTrue(self.autocomplete)
         data["text editor"]["auto-quote"] = self.IsTrue(self.autocomplete)
 
-        with open("editor/data/config.json", "w") as f:
+        with open(self.jide.path + "config.json", "w") as f:
             json.dump(data, f, indent=4)
             f.close()
         
@@ -82,7 +82,7 @@ class SettingsMenu():
     def Reset(self):
         MsgBox = messagebox.askquestion('Exit',f'Are you sure you want to reset your settings to default?', icon='warning')
         if MsgBox == 'yes':
-            with open("editor/data/config.json", "w") as f:
+            with open(self.jide.path + "config.json", "w") as f:
                 json.dump(default_settings, f, indent=4)
                 f.close()
         

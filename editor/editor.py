@@ -13,6 +13,7 @@ import os, sys
 class JIDE:
     def __init__(self):
         self.c = Config()
+        self.path = self.c.global_path
         self.file = None
         self.issaved = True
 
@@ -20,6 +21,7 @@ class JIDE:
         self.win.protocol("WM_DELETE_WINDOW", self.OnClose)
         self.win.geometry(f"{self.c.width}x{self.c.height}")
         self.win.title("JIDE")
+        self.win.iconbitmap(self.path + "icon.ico")
         self.win.config(bg=self.c.bg_color)
         self.win.wait_visibility(self.win)
         self.win.wm_attributes('-alpha', self.c.alpha)
@@ -42,6 +44,16 @@ class JIDE:
             self.returnbind = self.code.bind("<Return>", self.AutoIndentNewLines)
         self.Lighter = HighLighter(self)
         self.onkeydownbind = self.code.bind("<Key>", self.OnKeyDown)
+        try:
+            with open(sys.argv[1], 'r') as f: content = f.read(); f.close()
+            self.code.insert(INSERT, content)
+            self.win.title(f"JIDE ~ {sys.argv[1]}")
+            self.file = sys.argv[1]
+            self.issaved = True
+            if self.c.highlight:
+                self.Lighter.Highlight(None)
+        except IndexError:
+            pass
 
     def OnClose(self):
         if self.issaved == False:
@@ -243,6 +255,8 @@ class JIDE:
                 
                 self.code.delete(1.0,"end")
                 self.code.insert(1.0, contents)
+                if self.c.highlight:
+                    self.Lighter.Highlight(None)
                 self.file = fpath
                 self.win.title(f"JIDE ~ {fpath}")
                 self.issaved = True
@@ -368,6 +382,4 @@ class JIDE:
         del self.searchbox
         
         
-
-
 jide = JIDE()

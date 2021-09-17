@@ -1,4 +1,5 @@
 import json
+import os, sys
 
 default_settings = {  
     "highlight": {
@@ -25,12 +26,21 @@ default_settings = {
     }
 }
 
+global_path = "editor/data/"
 
 def getData():
-    with open("editor/data/config.json") as f:
-        data = json.load(f)
-        f.close()
-    return data
+    global global_path
+    try:
+        with open("editor/data/config.json") as f:
+            data = json.load(f)
+            f.close()
+        return data
+    except FileNotFoundError:
+        global_path = f"{sys.argv[0][:-8]}editor/data/"
+        with open(global_path + "config.json") as f:
+            data = json.load(f)
+            f.close()
+        return data
 
 class Config():
     def __init__(self):
@@ -55,6 +65,7 @@ class Config():
         self.brackets = bool(text["auto-bracket"] == "true")
         self.highlight = bool(self.data["highlight"]["enabled"] == "true")
         self.string_color = self.data["highlight"]["string"]
+        self.global_path = global_path
 
     def reload(self):
         self.data = getData()

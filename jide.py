@@ -1,4 +1,5 @@
 from editor.editor import jide
+import sys
 
 
 if __name__ == "__main__":

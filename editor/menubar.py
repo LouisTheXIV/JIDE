@@ -40,6 +40,8 @@ class MenuBar():
         self.info_menu.add_command(label="Source Code", command=self.Src)
         self.info_menu.add_command(label="Report Bug", command=self.ReportBug)
         self.info_menu.add_command(label="Settings", command=self.jide.OpenSettingsMenu)
+        self.info_menu.add_separator()
+        self.info_menu.add_command(label="Build 0.1")
 
         self.settings_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Settings", menu=self.settings_menu)
