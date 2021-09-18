@@ -1,5 +1,5 @@
 # JIDE
-Json IDE made with Python tkinter!\
+Json IDE made with Python tkinter!
 #### Download: https://github.com/LouisTheXIV/JIDE/releases/tag/v0.1
 
 # Features
